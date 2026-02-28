@@ -65,6 +65,8 @@ vncviewer localhost:5900
 ./up.sh          # Start VM
 ./stop.sh        # Graceful shutdown
 ./ssh.sh         # SSH in as claude
+./destroy.sh     # Remove VM (keeps cached base image)
+./destroy.sh --all  # Remove VM + base image (full clean)
 ```
 
 **Inside the VM:**
