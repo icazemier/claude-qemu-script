@@ -219,6 +219,7 @@ QEMU_ARGS=(
   -device virtio-gpu-pci \
   -device virtio-tablet-pci
   -display vnc=127.0.0.1:0,lossy
+  -k en-us
   -nographic
   -monitor unix:qemu-monitor.sock,server,nowait
 )
