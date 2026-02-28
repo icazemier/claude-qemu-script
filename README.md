@@ -135,6 +135,7 @@ Changes take effect after `./stop.sh && ./up.sh`.
 
 - **XFCE4** desktop with LightDM auto-login
 - **nvm** v0.40.1 + Node.js 22
+- **yarn** package manager
 - **Claude Code** (`@anthropic-ai/claude-code`)
 - **claude-flow** (`claude-flow@alpha`)
 - **Playwright** + Chromium browser
@@ -166,6 +167,27 @@ FORWARDED_PORTS=3000,3001,5173
 ```
 
 Services are reachable at `localhost:<port>` on the host.
+
+---
+
+## Connecting to host services
+
+Services running on your Mac/Linux host are reachable from inside the VM at the QEMU NAT gateway address:
+
+```
+10.0.2.2
+```
+
+For example, if you run a database on the host:
+
+| Service | VM connection string |
+|---------|----------------------|
+| MongoDB | `mongodb://10.0.2.2:27017` |
+| Redis | `redis://10.0.2.2:6379` |
+| PostgreSQL | `postgresql://user:pass@10.0.2.2:5432/db` |
+| Any HTTP API | `http://10.0.2.2:<port>` |
+
+No extra configuration is needed — QEMU's user-mode NAT routes traffic to the host automatically.
 
 ---
 

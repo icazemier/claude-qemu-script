@@ -112,6 +112,7 @@ su - claude -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/in
 su - claude -c 'source ~/.nvm/nvm.sh && nvm install 22 && nvm alias default 22'
 
 # ─── Install npm globals (as claude, via nvm) ─────────────────────────────────
+su - claude -c 'source ~/.nvm/nvm.sh && npm install -g yarn'
 su - claude -c 'source ~/.nvm/nvm.sh && npm install -g @anthropic-ai/claude-code'
 su - claude -c 'source ~/.nvm/nvm.sh && npm install -g claude-flow@alpha'
 su - claude -c 'source ~/.nvm/nvm.sh && npm install -g playwright'
@@ -225,7 +226,7 @@ chown -R claude:claude /home/claude/Desktop
 # ─── Clean up caches ──────────────────────────────────────────────────────────
 apt-get clean
 rm -rf /var/lib/apt/lists/*
-su - claude -c 'source ~/.nvm/nvm.sh && npm cache clean --force' || true
+su - claude -c 'source ~/.nvm/nvm.sh && npm cache clean --force && yarn cache clean' || true
 
 echo ""
 echo "╔══════════════════════════════════════════════════════════╗"
