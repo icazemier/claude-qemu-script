@@ -218,6 +218,7 @@ QEMU_ARGS=(
   -device virtio-net-pci,netdev=net0
   -device virtio-gpu-pci \
   -device virtio-tablet-pci
+  -device virtio-keyboard-pci
   -display vnc=127.0.0.1:0,lossy
   -k en-us
   -nographic
