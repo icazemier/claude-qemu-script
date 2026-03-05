@@ -20,10 +20,6 @@ fi
 
 if [ -S qemu-monitor.sock ]; then
   echo "==> Sending shutdown signal via QEMU monitor..."
-  # Connect, drain QEMU's greeting/prompt, then send the command.
-  # Uses python3 stdlib only (PSF-2.0 / MIT-compatible) — no socat needed.
-  # Note: || fallback must be inline on the <<'EOF' line; anything before EOF
-  # is heredoc content, not bash code.
   python3 - 2>/dev/null <<'EOF' || { echo "Monitor unresponsive, sending SIGTERM..."; kill "$PID"; }
 import socket, sys
 s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -43,7 +39,6 @@ else
   kill "$PID"
 fi
 
-echo -n "==> Waiting for VM to stop"
 TIMEOUT=60
 ELAPSED=0
 while kill -0 "$PID" 2>/dev/null; do
@@ -53,11 +48,11 @@ while kill -0 "$PID" 2>/dev/null; do
     kill -9 "$PID" 2>/dev/null || true
     break
   fi
-  echo -n "."
+  printf "\r==> Waiting for VM to stop... (%ds)" "$ELAPSED"
   sleep 1
   ELAPSED=$((ELAPSED + 1))
 done
-echo " done."
+printf "\r==> Waiting for VM to stop... done.    \n"
 
 rm -f vm.pid qemu-monitor.sock
 echo "VM stopped."
