@@ -110,11 +110,25 @@ FORWARDED_PORTS=${FORWARDED_PORTS:-}
 
 # ─── File locking — prevent concurrent execution ─────────────────────────────
 
-LOCKFILE="$SCRIPT_DIR/.up.lock"
-exec 9>"$LOCKFILE"
-if ! flock -n 9; then
-  die "Another instance of up.sh is already running."
+LOCKDIR="$SCRIPT_DIR/.up.lock"
+if ! mkdir "$LOCKDIR" 2>/dev/null; then
+  # Check if the owning process is still alive
+  if [ -f "$LOCKDIR/pid" ]; then
+    OLD_PID=$(cat "$LOCKDIR/pid" 2>/dev/null)
+    if [ -n "$OLD_PID" ] && ! kill -0 "$OLD_PID" 2>/dev/null; then
+      printf "${YELLOW}WARNING:${NC} Removing stale lock (PID $OLD_PID no longer running).\n" >&2
+      rm -rf "$LOCKDIR"
+      mkdir "$LOCKDIR" || die "Failed to acquire lock."
+    else
+      die "Another instance of up.sh is already running (PID $OLD_PID)."
+    fi
+  else
+    rm -rf "$LOCKDIR"
+    mkdir "$LOCKDIR" || die "Failed to acquire lock."
+  fi
 fi
+echo $$ > "$LOCKDIR/pid"
+trap 'rm -rf "$LOCKDIR" 2>/dev/null' EXIT
 
 # ─── Step 1: Validate dependencies & environment ─────────────────────────────
 
