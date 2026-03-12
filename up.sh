@@ -69,7 +69,7 @@ case "$PLATFORM" in
     IMAGE_NAME=ubuntu-24.04-server-cloudimg-arm64.img
     IMAGE_URL=https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-arm64.img
     ISO_TOOL=hdiutil
-    VNC_OPEN_CMD='open vnc://localhost:5900'
+    VNC_OPEN_CMD='open vnc://localhost:5910'
     ;;
   linux-arm64)
     QEMU_BIN=qemu-system-aarch64
@@ -79,7 +79,7 @@ case "$PLATFORM" in
     IMAGE_NAME=ubuntu-24.04-server-cloudimg-arm64.img
     IMAGE_URL=https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-arm64.img
     ISO_TOOL=genisoimage
-    VNC_OPEN_CMD='vncviewer localhost:5900'
+    VNC_OPEN_CMD='vncviewer localhost:5910'
     ;;
   linux-x86_64)
     QEMU_BIN=qemu-system-x86_64
@@ -89,7 +89,7 @@ case "$PLATFORM" in
     IMAGE_NAME=ubuntu-24.04-server-cloudimg-amd64.img
     IMAGE_URL=https://cloud-images.ubuntu.com/releases/24.04/release/ubuntu-24.04-server-cloudimg-amd64.img
     ISO_TOOL=genisoimage
-    VNC_OPEN_CMD='vncviewer localhost:5900'
+    VNC_OPEN_CMD='vncviewer localhost:5910'
     ;;
   *)
     die "Unsupported platform: ${PLATFORM}. Supported: macOS Apple Silicon, Linux arm64, Linux x86_64"
@@ -176,7 +176,7 @@ check_port_free() {
   fi
 }
 check_port_free 2222
-check_port_free 5900
+check_port_free 5910
 
 ok
 
@@ -310,7 +310,7 @@ QEMU_ARGS=(
   -device virtio-gpu-pci \
   -device virtio-tablet-pci
   -device virtio-keyboard-pci
-  -display vnc=127.0.0.1:0,lossy=on
+  -display vnc=127.0.0.1:10,lossy=on
   -k en-us
   -nographic
   -monitor unix:qemu-monitor.sock,server,nowait
@@ -327,7 +327,7 @@ case "$FIRMWARE_TYPE" in
 esac
 
 # Networking — build hostfwd string
-NET="user,id=net0,hostfwd=tcp::2222-:22,hostfwd=tcp::5900-:5900"
+NET="user,id=net0,hostfwd=tcp::2222-:22"
 if [ -n "$FORWARDED_PORTS" ]; then
   for port in ${FORWARDED_PORTS//,/ }; do
     port="${port// /}"
